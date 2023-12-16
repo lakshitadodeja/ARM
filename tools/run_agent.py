@@ -21,6 +21,7 @@ FREEZE_DURATION = 2
 FPS = 20
 
 flags.DEFINE_string('logdir', '/path/to/log/dir', 'weight dir.')
+flags.DEFINE_string('clipdir', '/path/to/clip/dir', 'clip dir.')
 flags.DEFINE_string('method', 'C2FARM', 'The method to run.')
 flags.DEFINE_string('task', 'take_lid_off_saucepan', 'The task to run.')
 flags.DEFINE_integer('episodes', 1, 'The number of episodes to run.')
@@ -28,14 +29,17 @@ flags.DEFINE_integer('episodes', 1, 'The number of episodes to run.')
 FLAGS = flags.FLAGS
 
 
-def _save_clips(clips, name):
+def _save_clips(clips, name, clipdir):
     final_clip = concatenate_videoclips(clips)
+    name = os.path.join(clipdir,name)
     final_clip.write_videofile('%s.mp4' % name)
 
 
-def visualise(logdir, task, method):
+def visualise(logdir, task, method, clipdir):
     config_path = os.path.join(logdir, task, method, '.hydra')
     weights_path = os.path.join(logdir, task, method, 'seed0', 'weights')
+    if not os.path.exists(clipdir):
+        os.makedirs(clipdir)
 
     if not os.path.exists(config_path):
         raise ValueError('No cofig in: ' + config_path)
@@ -121,7 +125,7 @@ def visualise(logdir, task, method):
             for k in obs_history.keys():
                 obs_history[k].append(transition.observation[k])
                 obs_history[k].pop(0)
-        _save_clips(clips, '%s_%s_%s.mp4' % (method, task, ep))
+        _save_clips(clips, '%s_%s_%s' % (method, task, ep), clipdir)
 
     print('Shutting down env...')
     env.shutdown()
@@ -135,7 +139,7 @@ def _get_type(x):
 
 def main(argv):
     del argv
-    visualise(FLAGS.logdir, FLAGS.task, FLAGS.method)
+    visualise(FLAGS.logdir, FLAGS.task, FLAGS.method, FLAGS.clipdir)
 
 
 if __name__ == '__main__':
