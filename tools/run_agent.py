@@ -121,7 +121,7 @@ def visualise(logdir, task, method):
             for k in obs_history.keys():
                 obs_history[k].append(transition.observation[k])
                 obs_history[k].pop(0)
-        _save_clips(clips, '%s_%s.mp4' % (method, task))
+        _save_clips(clips, '%s_%s_%s.mp4' % (method, task, ep))
 
     print('Shutting down env...')
     env.shutdown()
