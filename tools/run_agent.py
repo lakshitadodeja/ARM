@@ -11,6 +11,7 @@ from rlbench.action_modes.gripper_action_modes import Discrete
 from rlbench.backend.utils import task_file_to_task_class
 
 from arm import c2farm, qte, lpr
+from arm.baselines import bc, td3, dac, sac
 from arm.custom_rlbench_env import CustomRLBenchEnv
 from arm.lpr.trajectory_action_mode import TrajectoryActionMode
 from launch import _create_obs_config
@@ -79,6 +80,12 @@ def visualise(logdir, task, method):
             cfg, env, cfg.rlbench.scene_bounds, cfg.rlbench.camera_resolution,
             cfg.method.trajectory_point_noise, cfg.method.trajectory_points,
             cfg.method.trajectory_mode, cfg.method.trajectory_samples)
+    elif cfg.method.name == 'BC':
+        agent = bc.launch_utils.create_agent(
+            cfg.rlbench.cameras[0], cfg.method.activation, cfg.method.lr,
+            cfg.method.weight_decay, cfg.rlbench.camera_resolution,
+            cfg.method.grad_clip, env.low_dim_state_len)
+
     else:
         raise ValueError('Invalid method name.')
 
