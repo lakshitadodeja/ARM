@@ -2,6 +2,7 @@ import numpy as np
 import pyrender
 import torch
 import trimesh
+from trimesh import voxel
 from pyrender.trackball import Trackball
 from rlbench.backend.const import DEPTH_SCALE
 from scipy.spatial.transform import Rotation
@@ -156,7 +157,7 @@ def create_voxel_scene(
 
     transform = trimesh.transformations.scale_and_translate(
         scale=voxel_size, translate=(0.0, 0.0, 0.0))
-    trimesh_voxel_grid = trimesh.voxel.VoxelGrid(
+    trimesh_voxel_grid = voxel.VoxelGrid(
         encoding=occupancy, transform=transform)
     geometry = trimesh_voxel_grid.as_boxes(colors=rgb)
     scene = trimesh.Scene()
