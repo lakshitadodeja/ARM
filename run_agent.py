@@ -109,6 +109,7 @@ def visualise(logdir, task, method, clipdir):
         clips = []
         last = False
         for step in range(cfg.rlbench.episode_length):
+            print("stepping")
             prepped_data = {k: torch.FloatTensor([v]) for k, v in obs_history.items()}
             act_result = agent.act(step, prepped_data, deterministic=True)
             transition = env.step(act_result)
@@ -116,6 +117,7 @@ def visualise(logdir, task, method, clipdir):
             trajectory_frames = cinemtaic_cam.frames
             if len(trajectory_frames) > 0:
                 cinemtaic_cam.empty()
+                print("appending clip !")
                 clips.append(ImageSequenceClip(trajectory_frames, fps=FPS))
 
             if last:
